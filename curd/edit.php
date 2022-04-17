@@ -1,0 +1,85 @@
+<?php
+include ('config.php');
+
+
+if(isset($_REQUEST['edit_id'])){
+    $edtdata = $_REQUEST['edit_id'];
+
+ $edtdatasql =   "SELECT * FROM student WHERE ID = $edtdata  ";
+
+$finaleditdatasql = mysqli_query($conn, $edtdatasql);
+
+if($finaleditdatasql == TRUE){
+   $data =  mysqli_fetch_assoc($finaleditdatasql);{
+            // $id = $data['ID'];
+            $fullname = $data['fullname'];
+            $photo = $data['photo'];
+            $address = $data['address'];
+            $email = $data['email'];
+    }
+}
+
+}
+
+// data fetch korar jonno
+
+if(isset($_REQUEST['submit'])){
+    $edtdata = $_REQUEST['edit_id'];
+    $fullname = $_REQUEST['fullname'];
+   
+    $address = $_REQUEST['address'];
+    $email = $_REQUEST['email'];
+
+    $photo = $_FILES['photo']['name'];
+    $phototmp = $_FILES['photo']['tmp_name'];
+    $photoload = 'upload/'.$photo;
+    move_uploaded_file($phototmp,$photoload);
+
+
+
+    $upsql = "UPDATE student SET fullname='$fullname', photo='$photo',address='$address', email= '$email' WHERE ID = $edtdata  ";
+
+   $final =  mysqli_query($conn,$upsql);
+
+   if($final == true){
+       echo "done";
+       header('Location: view.php');
+   }else{
+       echo "none";
+   }
+}
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input information</title>
+</head>
+<body>
+
+    <form action="" method="POST" style="width: 400px; margin: auto;" enctype="multipart/form-data">
+
+        <label for="">Name </label><br>
+        <input type="text" name="fullname" value="<?php if(isset($fullname)){ echo $fullname;}?>"><br><br>
+        <label for="">Photo </label><br>
+        
+            <img  src='upload/<?php echo $photo;?>' width=50 height=50 style="border-radius: 50%;">
+        
+        
+        <input type="file" name="photo"><br><br>
+        <label for="">Address </label><br>
+        <input type="text" name="address" value="<?php if(isset($address)){ echo $address;}?>"><br><br>
+        <label for="">Email </label><br>
+        <input type="text" name="email" value="<?php if(isset($email)){ echo $email;}?>"> <br><br>
+        <br>
+        <input type="submit" name="submit" value="UPDATE">
+
+    </form>
+    
+</body>
+</html>
